@@ -1,0 +1,44 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- Add Styles Here -->
+    
+    <!-- Card Main view-->
+    <Style Selector="Border.card">
+        <Setter Property="Background" Value="White"></Setter>
+        <Setter Property="BorderBrush" Value="#CCCCCC"></Setter>
+        <Setter Property="BorderThickness" Value="2"></Setter>
+        <Setter Property="CornerRadius" Value="12"></Setter>
+        <Setter Property="Padding" Value="30"></Setter>
+        <Setter Property="Cursor" Value="Hand"></Setter>
+    </Style>
+    
+    <!-- The effect when cursor move into the card region -->
+    <Style Selector="Border.card:pointerover">
+        <Setter Property="BorderBrush" Value="#0078D4"></Setter>
+    </Style>
+    
+    <!-- The text view in the card -->
+    <Style Selector="TextBlock.content">
+        <Setter Property="FontSize" Value="24"></Setter>
+        <Setter Property="TextWrapping" Value="Wrap"></Setter>
+        <Setter Property="TextAlignment" Value="Center"></Setter>
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+    </Style>
+    
+    <!-- view of label -->
+    <Style Selector="TextBlock.label">
+        <Setter Property="FontSize" Value="14"></Setter>
+        <Setter Property="Foreground" Value="#666666"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        <Setter Property="Margin" Value="0,0,0,10"></Setter>
+    </Style>
+    
+</Styles>

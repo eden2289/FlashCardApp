@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="FlashCardApp.Controls.FlipCard"
+             x:Name="Root">
+    
+    <UserControl.Styles>
+        <StyleInclude Source="/Styles/FlipCardStyle.axaml"></StyleInclude>
+    </UserControl.Styles>
+    
+    <Border Classes="card"
+            x:Name="CardBorder"
+            PointerPressed="CardBorder_OnPointerPressed_">
+        
+        <!-- animation of flip -->
+        <Border.RenderTransform>
+            <ScaleTransform ScaleX="1"></ScaleTransform>
+        </Border.RenderTransform>
+        
+        <!-- Card content -->
+        <Grid>
+            <StackPanel x:Name="FrontPanel"
+                        IsVisible="{Binding !IsFlipped, ElementName=Root}">
+                <!-- front content -->
+                <TextBlock Classes="label" Text="Question"></TextBlock>
+                <TextBlock Classes="content" Text="{Binding FrontText, ElementName=Root}"></TextBlock>
+            </StackPanel>
+                
+            <StackPanel x:Name="BackPanel"
+                        IsVisible="{Binding IsFlipped, ElementName=Root}">
+                <!-- back content -->
+                <TextBlock Classes="label" Text="Answer"></TextBlock>
+                <TextBlock Classes="content" Text="{Binding BackText, ElementName=Root}"></TextBlock>
+            </StackPanel>
+                
+        </Grid>
+        
+    </Border>
+    
+</UserControl>

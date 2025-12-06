@@ -1465,19 +1465,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/linyili/.nuget/packages/": {}
+    "/home/ejay/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/linyili/RiderProjects/FlashCardApp/FlashCardApp/FlashCardApp.csproj",
+      "projectUniqueName": "/home/ejay/FlashCardApp/FlashCardApp/FlashCardApp.csproj",
       "projectName": "FlashCardApp",
-      "projectPath": "/Users/linyili/RiderProjects/FlashCardApp/FlashCardApp/FlashCardApp.csproj",
-      "packagesPath": "/Users/linyili/.nuget/packages/",
-      "outputPath": "/Users/linyili/RiderProjects/FlashCardApp/FlashCardApp/obj/",
+      "projectPath": "/home/ejay/FlashCardApp/FlashCardApp/FlashCardApp.csproj",
+      "packagesPath": "/home/ejay/.nuget/packages/",
+      "outputPath": "/home/ejay/FlashCardApp/FlashCardApp/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/linyili/.nuget/NuGet/NuGet.Config"
+        "/home/ejay/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -1501,7 +1501,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.100"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net9.0": {
@@ -1543,12 +1543,18 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[9.0.11, 9.0.11]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.100/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.308/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
