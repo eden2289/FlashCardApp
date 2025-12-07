@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls = "using:FlashCardApp.Controls"
         xmlns:vm="using:FlashCardApp.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -15,6 +16,14 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
+    <controls:FlipCard
+        FrontText="Hello"
+        BackText="你好"
+        Width="300"
+        Height="200"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center">
+    </controls:FlipCard>
+    
 </Window>

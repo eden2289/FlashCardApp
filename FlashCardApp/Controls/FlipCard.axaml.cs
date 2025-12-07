@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -6,6 +7,7 @@ using Avalonia.Media;
 using Avalonia.Animation;
 using Avalonia.Styling;
 using System.Threading.Tasks;
+using Avalonia.Animation.Easings;
 
 namespace FlashCardApp.Controls;
 
@@ -51,6 +53,59 @@ public partial class FlipCard : UserControl
     //Animation
     private async Task FlipAnimation()
     {
-        //Wait for Implementation
+        var cardBorder = this.FindControl<Border>("CardBorder");
+        if (cardBorder == null) return;
+        
+        var transform = cardBorder.RenderTransform as ScaleTransform;
+        if (transform == null) return;
+
+        var shrinkAnimation = new Animation
+        {
+            Duration = TimeSpan.FromMilliseconds(300),
+            Easing = new CubicEaseInOut(),
+            Children =
+            {
+                new KeyFrame
+                {
+                    Cue = new Cue(0.0),
+                    Setters = { new Setter(ScaleTransform.ScaleXProperty, 1.0) },
+                },
+                new KeyFrame
+                {
+                    Cue = new Cue(1.0),
+                    Setters = { new Setter(ScaleTransform.ScaleXProperty, 0.0) },
+                }
+            }
+        };
+
+        await shrinkAnimation.RunAsync(cardBorder);
+
+        this.IsFlipped = !this.IsFlipped;
+
+        var expandAnimation = new Animation
+        {
+            Duration = TimeSpan.FromMilliseconds(300),
+            Easing = new CubicEaseInOut(),
+            Children =
+            {
+                new KeyFrame
+                {
+                    Cue = new Cue(0.0),
+                    Setters = { new Setter(ScaleTransform.ScaleXProperty, 0.0) },
+                },
+                new KeyFrame
+                {
+                    Cue = new Cue(1.0),
+                    Setters = { new Setter(ScaleTransform.ScaleXProperty, 1.0) },
+                }
+            }
+        };
+        
+        await expandAnimation.RunAsync(cardBorder);
+    }
+
+    public void Reset()
+    {
+        this.IsFlipped = false;
     }
 }
