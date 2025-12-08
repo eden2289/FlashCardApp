@@ -46,3 +46,6 @@ publish/
 # User-specific files
 *.rsuser
 *.csproj.user
+
+# App data cache (word translations)
+word_cache.json

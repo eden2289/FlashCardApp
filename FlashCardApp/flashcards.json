@@ -14,11 +14,46 @@
         "Back": "\u4F60\u597D"
       },
       {
-        "Id": "1d2f5e1b-8187-457c-96f0-ef82be4fdce0",
-        "Front": "000",
-        "Back": "kkoko"
+        "Id": "9929bea4-3b4f-4bd1-a285-307e82a8bc7b",
+        "Front": "love",
+        "Back": "(n.) \u611B(love)\nStrong affection."
+      },
+      {
+        "Id": "c73803d3-23cc-4fce-a930-655243e194bf",
+        "Front": "city",
+        "Back": "(n.) \u57CE\u5E02\nA large settlement, bigger than a town; sometimes with a specific legal definition, depending on the place."
+      },
+      {
+        "Id": "c8c947ba-eac5-4405-b2df-fdea2bec741c",
+        "Front": "cancer",
+        "Back": "(n.) \u5DE8\u87F9\u5EA7 06/22 ~ 07/22\nA disease in which the cells of a tissue undergo uncontrolled (and often rapid) proliferation."
+      },
+      {
+        "Id": "e73c0338-d391-4f78-bf3e-11bfcf9afa98",
+        "Front": "proliferation",
+        "Back": "(n.) \u7E41\nThe process by which an organism produces others of its kind; breeding, propagation, procreation, reproduction."
+      },
+      {
+        "Id": "dda7f32b-62b1-4515-bfc1-9d8615d5acd4",
+        "Front": "fine",
+        "Back": "(n.) \u7F70\u6B3E; (v.) \u8655\u4EE5\u7F70\u6B3E"
+      },
+      {
+        "Id": "5507db78-b20f-4987-8dc4-8b6ba4b3b917",
+        "Front": "pass",
+        "Back": "(v.) \u901A\u904E"
+      },
+      {
+        "Id": "42d0ef90-8a07-424f-9c2e-07f5dbb5b31d",
+        "Front": "entertainment",
+        "Back": "(n.) \u5A1B\u6A02"
+      },
+      {
+        "Id": "3b3b457d-e3cc-4d97-bcf6-c35cc9dc2c02",
+        "Front": "enormous",
+        "Back": "(adj.) \u5049\u5927\u7684"
       }
     ],
-    "ValidCardCount": 3
+    "ValidCardCount": 10
   }
 ]

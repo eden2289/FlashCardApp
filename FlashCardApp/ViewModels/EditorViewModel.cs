@@ -4,6 +4,7 @@ using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlashCardApp.Models;
+using FlashCardApp.Services;
 
 namespace FlashCardApp.ViewModels;
 
@@ -15,14 +16,19 @@ public partial class EditorViewModel : ViewModelBase
     [ObservableProperty]
     private string _pageTitle;
 
+    [ObservableProperty]
+    private ObservableCollection<FlashcardEditorViewModel> _cardViewModels = new();
+
     private readonly bool _isNewDeck;
     private readonly Action _onSave;
     private readonly Action _onCancel;
+    private readonly DictionaryService _dictionaryService;
 
     public EditorViewModel(Deck? deck, Action onSave, Action onCancel)
     {
         _onSave = onSave;
         _onCancel = onCancel;
+        _dictionaryService = new DictionaryService();
 
         if (deck == null)
         {
@@ -45,6 +51,12 @@ public partial class EditorViewModel : ViewModelBase
             _currentDeck = deck;
             _pageTitle = "Edit Deck";
         }
+
+        // Create ViewModels for each card
+        foreach (var card in _currentDeck.Cards)
+        {
+            CardViewModels.Add(new FlashcardEditorViewModel(card, _dictionaryService));
+        }
     }
 
     public bool IsNewDeck => _isNewDeck;
@@ -52,15 +64,18 @@ public partial class EditorViewModel : ViewModelBase
     [RelayCommand]
     private void AddCard()
     {
-        CurrentDeck.Cards.Add(new Flashcard());
+        var newCard = new Flashcard();
+        CurrentDeck.Cards.Add(newCard);
+        CardViewModels.Add(new FlashcardEditorViewModel(newCard, _dictionaryService));
     }
 
     [RelayCommand]
-    private void RemoveCard(Flashcard card)
+    private void RemoveCard(FlashcardEditorViewModel cardVm)
     {
-        if (card != null && CurrentDeck.Cards.Contains(card))
+        if (cardVm != null && CardViewModels.Contains(cardVm))
         {
-            CurrentDeck.Cards.Remove(card);
+            CurrentDeck.Cards.Remove(cardVm.Card);
+            CardViewModels.Remove(cardVm);
         }
     }
 
