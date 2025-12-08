@@ -8,8 +8,32 @@
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
+
+    <Application.Resources>
+        <!-- Embedded font for cross-platform consistency -->
+        <FontFamily x:Key="AppFont">avares://FlashCardApp/Assets/Fonts/NotoSansTC-Regular.ttf#Noto Sans CJK TC</FontFamily>
+        <!-- Fallback font chain -->
+        <FontFamily x:Key="AppFontFallback">Noto Sans TC, Microsoft JhengHei, PingFang TC, Noto Sans CJK TC, Source Han Sans TC, sans-serif</FontFamily>
+    </Application.Resources>
   
     <Application.Styles>
         <FluentTheme />
+        
+        <!-- Global font settings for cross-platform consistency -->
+        <Style Selector="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFallback}"/>
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFallback}"/>
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFallback}"/>
+        </Style>
+        <Style Selector="CheckBox">
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFallback}"/>
+        </Style>
+        <Style Selector="Label">
+            <Setter Property="FontFamily" Value="{StaticResource AppFontFallback}"/>
+        </Style>
     </Application.Styles>
 </Application>
