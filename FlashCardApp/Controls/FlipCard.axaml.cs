@@ -2,7 +2,6 @@ using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Animation;
 using Avalonia.Styling;
@@ -19,8 +18,11 @@ public partial class FlipCard : UserControl
         AvaloniaProperty.Register<FlipCard, string>(nameof(BackText), "Back");
     public static readonly StyledProperty<bool> IsFlippedProperty =
         AvaloniaProperty.Register<FlipCard, bool>(nameof(IsFlipped), false);
+    public static readonly StyledProperty<bool> IsInteractiveProperty =
+        AvaloniaProperty.Register<FlipCard, bool>(nameof(IsInteractive), true);
     
-    //Property
+    private bool _isAnimating;
+    
     public bool IsFlipped { 
         get => GetValue(IsFlippedProperty);
         set => SetValue(IsFlippedProperty, value);
@@ -38,74 +40,108 @@ public partial class FlipCard : UserControl
         set => SetValue(BackTextProperty, value);
     }
     
-    //this bug can ignore, after the project build, it will work.
+    public bool IsInteractive
+    {
+        get => GetValue(IsInteractiveProperty);
+        set => SetValue(IsInteractiveProperty, value);
+    }
+    
     public FlipCard()
     {
         InitializeComponent();
     }
 
-    // Card got pressed will trigger the animation of flipping
-    private async void CardBorder_OnPointerPressed_(object? sender, PointerPressedEventArgs e)
+    private async void CardContainer_OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        await FlipAnimation();
+        if (IsInteractive && !_isAnimating)
+        {
+            await FlipAsync();
+        }
     }
     
-    //Animation
-    private async Task FlipAnimation()
+    /// <summary>
+    /// Public method to flip the card programmatically
+    /// </summary>
+    public async Task FlipAsync()
     {
-        var cardBorder = this.FindControl<Border>("CardBorder");
-        if (cardBorder == null) return;
-        
-        var transform = cardBorder.RenderTransform as ScaleTransform;
-        if (transform == null) return;
+        if (_isAnimating) return;
+        _isAnimating = true;
 
-        var shrinkAnimation = new Animation
+        try
         {
-            Duration = TimeSpan.FromMilliseconds(300),
-            Easing = new CubicEaseInOut(),
-            Children =
+            var frontBorder = this.FindControl<Border>("FrontBorder");
+            var backBorder = this.FindControl<Border>("BackBorder");
+            
+            if (frontBorder == null || backBorder == null) return;
+
+            var currentBorder = IsFlipped ? backBorder : frontBorder;
+            var nextBorder = IsFlipped ? frontBorder : backBorder;
+            
+            var currentTransform = currentBorder.RenderTransform as ScaleTransform;
+            var nextTransform = nextBorder.RenderTransform as ScaleTransform;
+            
+            if (currentTransform == null || nextTransform == null) return;
+
+            // Shrink current side
+            var shrinkAnimation = new Animation
             {
-                new KeyFrame
+                Duration = TimeSpan.FromMilliseconds(200),
+                Easing = new CubicEaseIn(),
+                FillMode = FillMode.Forward,
+                Children =
                 {
-                    Cue = new Cue(0.0),
-                    Setters = { new Setter(ScaleTransform.ScaleXProperty, 1.0) },
-                },
-                new KeyFrame
-                {
-                    Cue = new Cue(1.0),
-                    Setters = { new Setter(ScaleTransform.ScaleXProperty, 0.0) },
+                    new KeyFrame
+                    {
+                        Cue = new Cue(0.0),
+                        Setters = { new Setter(ScaleTransform.ScaleXProperty, 1.0) },
+                    },
+                    new KeyFrame
+                    {
+                        Cue = new Cue(1.0),
+                        Setters = { new Setter(ScaleTransform.ScaleXProperty, 0.0) },
+                    }
                 }
-            }
-        };
+            };
 
-        await shrinkAnimation.RunAsync(cardBorder);
+            await shrinkAnimation.RunAsync(currentBorder);
 
-        this.IsFlipped = !this.IsFlipped;
+            // Toggle flipped state
+            IsFlipped = !IsFlipped;
 
-        var expandAnimation = new Animation
+            // Expand new side
+            var expandAnimation = new Animation
+            {
+                Duration = TimeSpan.FromMilliseconds(200),
+                Easing = new CubicEaseOut(),
+                FillMode = FillMode.Forward,
+                Children =
+                {
+                    new KeyFrame
+                    {
+                        Cue = new Cue(0.0),
+                        Setters = { new Setter(ScaleTransform.ScaleXProperty, 0.0) },
+                    },
+                    new KeyFrame
+                    {
+                        Cue = new Cue(1.0),
+                        Setters = { new Setter(ScaleTransform.ScaleXProperty, 1.0) },
+                    }
+                }
+            };
+
+            await expandAnimation.RunAsync(nextBorder);
+        }
+        finally
         {
-            Duration = TimeSpan.FromMilliseconds(300),
-            Easing = new CubicEaseInOut(),
-            Children =
-            {
-                new KeyFrame
-                {
-                    Cue = new Cue(0.0),
-                    Setters = { new Setter(ScaleTransform.ScaleXProperty, 0.0) },
-                },
-                new KeyFrame
-                {
-                    Cue = new Cue(1.0),
-                    Setters = { new Setter(ScaleTransform.ScaleXProperty, 1.0) },
-                }
-            }
-        };
-        
-        await expandAnimation.RunAsync(cardBorder);
+            _isAnimating = false;
+        }
     }
 
+    /// <summary>
+    /// Reset card to front side without animation
+    /// </summary>
     public void Reset()
     {
-        this.IsFlipped = false;
+        IsFlipped = false;
     }
 }

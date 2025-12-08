@@ -1,0 +1,209 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:FlashCardApp.ViewModels"
+             xmlns:controls="using:FlashCardApp.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="FlashCardApp.Views.StudyView"
+             x:DataType="vm:StudyViewModel"
+             Background="#121212">
+    
+    <Design.DataContext>
+        <vm:StudyViewModel />
+    </Design.DataContext>
+
+    <Grid>
+        <!-- Layer 1: Background -->
+        <Border Background="#0A0A0A"/>
+        
+        <!-- Main Content -->
+        <Grid RowDefinitions="Auto,*,Auto" Margin="20">
+            
+            <!-- Top Bar -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,20">
+                <!-- Back/Abort Button -->
+                <Button Grid.Column="0"
+                        Command="{Binding AbortCommand}"
+                        Padding="12,8"
+                        Background="Transparent"
+                        BorderBrush="#666666"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        Cursor="Hand">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="✕" FontSize="16" Foreground="#A0A0A0"/>
+                        <TextBlock Text="結束" FontSize="14" Foreground="#A0A0A0"/>
+                    </StackPanel>
+                </Button>
+                
+                <!-- Progress Info -->
+                <StackPanel Grid.Column="1" 
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Progress}" 
+                               FontSize="18" 
+                               FontWeight="SemiBold"
+                               Foreground="White"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding RoundInfo}" 
+                               FontSize="14" 
+                               Foreground="#A0A0A0"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+                
+                <!-- Undo Button -->
+                <Button Grid.Column="2"
+                        Command="{Binding UndoCommand}"
+                        IsVisible="{Binding CanUndo}"
+                        Padding="12,8"
+                        Background="Transparent"
+                        BorderBrush="#FFA000"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        Cursor="Hand">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="↩" FontSize="16" Foreground="#FFA000"/>
+                        <TextBlock Text="復原" FontSize="14" Foreground="#FFA000"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+            
+            <!-- Layer 2: Card Area -->
+            <Grid Grid.Row="1">
+                <!-- Review Missed Cards Banner -->
+                <Border IsVisible="{Binding IsReviewingMissed}"
+                        Background="#FFA000"
+                        CornerRadius="8"
+                        Padding="12,8"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Center"
+                        Margin="0,0,0,20"
+                        ZIndex="10">
+                    <TextBlock Text="📚 複習錯誤卡片中..."
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="White"/>
+                </Border>
+                
+                <!-- Card Container (Swipeable) -->
+                <Border x:Name="CardContainer"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Width="350"
+                        Height="450"
+                        PointerPressed="CardContainer_PointerPressed"
+                        PointerMoved="CardContainer_PointerMoved"
+                        PointerReleased="CardContainer_PointerReleased"
+                        Cursor="Hand">
+                    
+                    <Grid>
+                        <!-- Known Overlay (Green) -->
+                        <Border x:Name="KnownOverlay"
+                                Background="#4CAF50"
+                                CornerRadius="16"
+                                Opacity="0"
+                                ZIndex="5"/>
+                        
+                        <!-- Unknown Overlay (Red) -->
+                        <Border x:Name="UnknownOverlay"
+                                Background="#F44336"
+                                CornerRadius="16"
+                                Opacity="0"
+                                ZIndex="5"/>
+                        
+                        <!-- Card Content (Direct Implementation) -->
+                        <Border Background="White"
+                                CornerRadius="12"
+                                Padding="30"
+                                BorderBrush="#CCCCCC"
+                                BorderThickness="2"
+                                IsVisible="{Binding CurrentCard, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            <Border.Styles>
+                                <Style Selector="Border:pointerover">
+                                    <Setter Property="BorderBrush" Value="#0078D4"/>
+                                </Style>
+                            </Border.Styles>
+                            <Button Command="{Binding FlipCommand}"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Cursor="Hand">
+                                <StackPanel VerticalAlignment="Center" 
+                                            HorizontalAlignment="Center"
+                                            Spacing="12">
+                                    <!-- Label for Front -->
+                                    <TextBlock Text="詞語"
+                                               FontSize="14"
+                                               Foreground="#666666"
+                                               HorizontalAlignment="Center"
+                                               IsVisible="{Binding !IsFlipped}"/>
+                                    <!-- Label for Back -->
+                                    <TextBlock Text="定義"
+                                               FontSize="14"
+                                               Foreground="#666666"
+                                               HorizontalAlignment="Center"
+                                               IsVisible="{Binding IsFlipped}"/>
+                                    <!-- Front Content -->
+                                    <TextBlock Text="{Binding CurrentCard.Front}"
+                                               FontSize="28"
+                                               FontWeight="SemiBold"
+                                               Foreground="#333333"
+                                               TextWrapping="Wrap"
+                                               TextAlignment="Center"
+                                               MaxWidth="280"
+                                               IsVisible="{Binding !IsFlipped}"/>
+                                    <!-- Back Content -->
+                                    <TextBlock Text="{Binding CurrentCard.Back}"
+                                               FontSize="24"
+                                               Foreground="#555555"
+                                               TextWrapping="Wrap"
+                                               TextAlignment="Center"
+                                               MaxWidth="280"
+                                               IsVisible="{Binding IsFlipped}"/>
+                                    <!-- Tap hint -->
+                                    <TextBlock Text="點擊翻轉"
+                                               FontSize="12"
+                                               Foreground="#999999"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,20,0,0"/>
+                                </StackPanel>
+                            </Button>
+                        </Border>
+                        
+                        <!-- No Card State -->
+                        <Border IsVisible="{Binding CurrentCard, Converter={x:Static ObjectConverters.IsNull}}"
+                                Background="#1E1E1E"
+                                CornerRadius="16"
+                                Padding="40">
+                            <TextBlock Text="載入中..."
+                                       FontSize="20"
+                                       Foreground="#666666"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+            
+            <!-- Layer 3: Bottom Controls -->
+            <StackPanel Grid.Row="2" 
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Margin="0,20,0,0">
+                <TextBlock Text="點擊卡片翻轉"
+                           FontSize="14"
+                           Foreground="#666666"
+                           HorizontalAlignment="Center"/>
+                <TextBlock Text="← 向左滑動: 不認識  |  向右滑動: 認識 →"
+                           FontSize="14"
+                           Foreground="#666666"
+                           HorizontalAlignment="Center"
+                           Margin="0,8,0,0"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>
