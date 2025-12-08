@@ -16,13 +16,22 @@
         
         <!-- animation of flip -->
         <Border.RenderTransform>
-            <ScaleTransform ScaleX="1"></ScaleTransform>
+            <Rotate3DTransform
+                AngleY="0"
+                CenterX="0.5"
+                CenterY="0.5"
+                Depth="300"></Rotate3DTransform>
         </Border.RenderTransform>
         
         <!-- Card content -->
         <Grid>
             <StackPanel x:Name="FrontPanel"
                         IsVisible="{Binding !IsFlipped, ElementName=Root}">
+                <!-- Avoid reverse print when flipping -->
+                <StackPanel.RenderTransform>
+                    <ScaleTransform ScaleX="1"></ScaleTransform>
+                </StackPanel.RenderTransform>
+                
                 <!-- front content -->
                 <TextBlock Classes="label" Text="Question"></TextBlock>
                 <TextBlock Classes="content" Text="{Binding FrontText, ElementName=Root}"></TextBlock>
@@ -30,6 +39,11 @@
                 
             <StackPanel x:Name="BackPanel"
                         IsVisible="{Binding IsFlipped, ElementName=Root}">
+                <!-- Avoid reverse print when flipping -->
+                <StackPanel.RenderTransform>
+                    <ScaleTransform ScaleX="1"></ScaleTransform>
+                </StackPanel.RenderTransform>
+                
                 <!-- back content -->
                 <TextBlock Classes="label" Text="Answer"></TextBlock>
                 <TextBlock Classes="content" Text="{Binding BackText, ElementName=Root}"></TextBlock>
