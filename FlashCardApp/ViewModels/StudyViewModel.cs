@@ -46,6 +46,12 @@ public partial class StudyViewModel : ViewModelBase
     private Flashcard? _currentCard;
 
     [ObservableProperty]
+    private Flashcard? _upcomingCard;
+
+    [ObservableProperty]
+    private Flashcard? _thirdCard;
+
+    [ObservableProperty]
     private bool _isFlipped;
 
     [ObservableProperty]
@@ -59,6 +65,15 @@ public partial class StudyViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _isReviewingMissed;
+
+    [ObservableProperty]
+    private int _knownCount;
+
+    [ObservableProperty]
+    private int _unknownCount;
+
+    [ObservableProperty]
+    private int _remainingCount;
 
     public StudyViewModel(Action<Deck, StudyStats> onFinish, Action onAbort)
     {
@@ -80,19 +95,17 @@ public partial class StudyViewModel : ViewModelBase
     {
         CurrentDeck = deck;
         
-        // Get valid cards only
+        // Get valid cards only - keep original input order
         var validCards = deck.Cards
             .Where(c => !string.IsNullOrWhiteSpace(c.Front) || !string.IsNullOrWhiteSpace(c.Back))
             .ToList();
 
-        var shuffled = validCards.OrderBy(_ => _rng.Next()).ToList();
-
-        _studyQueue = new Queue<Flashcard>(shuffled);
+        _studyQueue = new Queue<Flashcard>(validCards);
         _unknownCards.Clear();
         _knownCards.Clear();
         _history.Clear();
         _currentRound = 1;
-        _totalCardsInSession = shuffled.Count;
+        _totalCardsInSession = validCards.Count;
         IsReviewingMissed = false;
 
         if (_totalCardsInSession == 0)
@@ -120,6 +133,7 @@ public partial class StudyViewModel : ViewModelBase
         if (_studyQueue.Count > 0)
         {
             CurrentCard = _studyQueue.Dequeue();
+            UpdateUpcomingCards();
             UpdateProgress();
             CanUndo = _history.Count > 0;
         }
@@ -140,6 +154,7 @@ public partial class StudyViewModel : ViewModelBase
                 CanUndo = false;
 
                 CurrentCard = _studyQueue.Dequeue();
+                UpdateUpcomingCards();
                 UpdateProgress();
             }
             else
@@ -151,12 +166,24 @@ public partial class StudyViewModel : ViewModelBase
     }
 
     /// <summary>
+    /// Update the next and third card references for stack display
+    /// </summary>
+    private void UpdateUpcomingCards()
+    {
+        var queueList = _studyQueue.ToList();
+        UpcomingCard = queueList.Count > 0 ? queueList[0] : null;
+        ThirdCard = queueList.Count > 1 ? queueList[1] : null;
+    }
+
+    /// <summary>
     /// Update progress display
     /// </summary>
     private void UpdateProgress()
     {
-        var remaining = _studyQueue.Count + (CurrentCard != null ? 1 : 0);
-        Progress = $"剩餘: {remaining} 張";
+        RemainingCount = _studyQueue.Count + (CurrentCard != null ? 1 : 0);
+        KnownCount = _knownCards.Count;
+        UnknownCount = _unknownCards.Count;
+        Progress = $"剩餘: {RemainingCount} 張";
         
         if (!IsReviewingMissed)
         {

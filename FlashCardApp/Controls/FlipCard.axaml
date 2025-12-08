@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="using:FlashCardApp.Controls"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
              x:Class="FlashCardApp.Controls.FlipCard"
              x:Name="Root">
@@ -10,38 +11,50 @@
         <StyleInclude Source="/Styles/FlipCardStyle.axaml"/>
     </UserControl.Styles>
     
-    <!-- Card Container with stacked Front and Back -->
-    <Grid x:Name="CardContainer"
-          PointerPressed="CardContainer_OnPointerPressed">
+    <!-- Card Container with 3D Transform -->
+    <Border x:Name="CardBorder"
+            Classes="card"
+            PointerPressed="CardContainer_OnPointerPressed">
         
-        <!-- Front Content -->
-        <Border Classes="card"
-                x:Name="FrontBorder"
-                IsVisible="{Binding !IsFlipped, ElementName=Root}"
-                RenderTransformOrigin="0.5,0.5">
-            <Border.RenderTransform>
-                <ScaleTransform ScaleX="1"/>
-            </Border.RenderTransform>
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <!-- 3D Transform for flip animation -->
+        <Border.RenderTransform>
+            <Rotate3DTransform
+                AngleY="0"
+                CenterX="0.5"
+                CenterY="0.5"
+                Depth="300"/>
+        </Border.RenderTransform>
+        
+        <!-- Card content -->
+        <Grid>
+            <StackPanel x:Name="FrontPanel"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        IsVisible="{Binding !IsFlipped, RelativeSource={RelativeSource AncestorType=controls:FlipCard}}">
+                <!-- Avoid reverse print when flipping -->
+                <StackPanel.RenderTransform>
+                    <ScaleTransform ScaleX="1"/>
+                </StackPanel.RenderTransform>
+                
+                <!-- front content -->
                 <TextBlock Classes="label" Text="詞語"/>
-                <TextBlock Classes="content" Text="{Binding FrontText, ElementName=Root}"/>
+                <TextBlock Classes="content" Text="{Binding FrontText, RelativeSource={RelativeSource AncestorType=controls:FlipCard}}"/>
             </StackPanel>
-        </Border>
-        
-        <!-- Back Content -->
-        <Border Classes="card"
-                x:Name="BackBorder"
-                IsVisible="{Binding IsFlipped, ElementName=Root}"
-                RenderTransformOrigin="0.5,0.5">
-            <Border.RenderTransform>
-                <ScaleTransform ScaleX="1"/>
-            </Border.RenderTransform>
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                
+            <StackPanel x:Name="BackPanel"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        IsVisible="{Binding IsFlipped, RelativeSource={RelativeSource AncestorType=controls:FlipCard}}">
+                <!-- Avoid reverse print when flipping -->
+                <StackPanel.RenderTransform>
+                    <ScaleTransform ScaleX="1"/>
+                </StackPanel.RenderTransform>
+                
+                <!-- back content -->
                 <TextBlock Classes="label" Text="定義"/>
-                <TextBlock Classes="content" Text="{Binding BackText, ElementName=Root}"/>
+                <TextBlock Classes="content" Text="{Binding BackText, RelativeSource={RelativeSource AncestorType=controls:FlipCard}}"/>
             </StackPanel>
-        </Border>
-        
-    </Grid>
+        </Grid>
+    </Border>
     
 </UserControl>

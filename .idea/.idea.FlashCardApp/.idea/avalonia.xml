@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="FlashCardApp/App.axaml" value="FlashCardApp/FlashCardApp.csproj" />
+        <entry key="FlashCardApp/Controls/FlipCard.axaml" value="FlashCardApp/FlashCardApp.csproj" />
+        <entry key="FlashCardApp/Styles/FlashCardStyle.axaml" value="FlashCardApp/FlashCardApp.csproj" />
+        <entry key="FlashCardApp/Styles/FlipCardStyle.axaml" value="FlashCardApp/FlashCardApp.csproj" />
+        <entry key="FlashCardApp/Views/MainWindow.axaml" value="FlashCardApp/FlashCardApp.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

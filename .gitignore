@@ -1,4 +1,48 @@
+# Build results
 bin/
 obj/
+out/
+
+# IDE - Rider / Visual Studio
 .idea/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# NuGet
+*.nupkg
+.nuget/
+packages/
+
+# Test results
+TestResults/
+*.trx
+
+# Debug
+*.log
+*.pdb
+
+# Publish output
+publish/
+
+# Backup files
+*~
+*.bak
+*.swp
+
+# User-specific files
+*.rsuser
+*.csproj.user

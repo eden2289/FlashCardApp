@@ -130,7 +130,7 @@
                 <!-- Add Card Button -->
                 <Button Command="{Binding AddCardCommand}"
                         HorizontalAlignment="Center"
-                        Margin="0,16,0,0"
+                        Margin="0,16,0,40"
                         Padding="20,12"
                         Background="#2A2A2A"
                         BorderBrush="#6200EE"

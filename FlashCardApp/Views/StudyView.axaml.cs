@@ -8,6 +8,7 @@ using Avalonia.Animation.Easings;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using System.Threading.Tasks;
+using FlashCardApp.Controls;
 using FlashCardApp.ViewModels;
 
 namespace FlashCardApp.Views;
@@ -16,6 +17,7 @@ public partial class StudyView : UserControl
 {
     private readonly Border? _knownOverlay;
     private readonly Border? _unknownOverlay;
+    private readonly FlipCard? _flipCard;
     private Point _startPoint;
     private bool _isDragging;
     private bool _hasMoved; // Track if pointer has moved significantly
@@ -31,6 +33,7 @@ public partial class StudyView : UserControl
         AvaloniaXamlLoader.Load(this);
         _knownOverlay = this.FindControl<Border>("KnownOverlay");
         _unknownOverlay = this.FindControl<Border>("UnknownOverlay");
+        _flipCard = this.FindControl<FlipCard>("StudyFlipCard");
     }
 
     private void CardContainer_PointerPressed(object? sender, PointerPressedEventArgs e)
@@ -113,12 +116,14 @@ public partial class StudyView : UserControl
             {
                 // Swipe Right - Known
                 await AnimateSwipeOff(cardContainer, 500);
+                _flipCard?.Reset(); // Reset flip state before next card
                 ViewModel?.SwipeRightCommand.Execute(null);
             }
             else if (deltaX < -SwipeThreshold)
             {
                 // Swipe Left - Unknown
                 await AnimateSwipeOff(cardContainer, -500);
+                _flipCard?.Reset(); // Reset flip state before next card
                 ViewModel?.SwipeLeftCommand.Execute(null);
             }
             else
@@ -132,8 +137,11 @@ public partial class StudyView : UserControl
         }
         else
         {
-            // It was a tap, not a drag - trigger flip
-            ViewModel?.FlipCommand.Execute(null);
+            // It was a tap, not a drag - trigger flip with 3D animation
+            if (_flipCard != null)
+            {
+                await _flipCard.FlipAsync();
+            }
         }
     }
 

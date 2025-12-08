@@ -16,152 +16,109 @@
 
     <Grid RowDefinitions="Auto,*">
         
-        <!-- Fixed Back Button (Top Left) -->
-        <Button Grid.Row="0"
-                Command="{Binding BackCommand}"
-                Margin="20,20,20,10"
-                Padding="12,8"
-                Background="Transparent"
-                BorderBrush="#666666"
-                BorderThickness="1"
-                CornerRadius="6"
-                Cursor="Hand"
-                HorizontalAlignment="Left"
-                ZIndex="10">
-            <StackPanel Orientation="Horizontal" Spacing="8">
-                <TextBlock Text="←" FontSize="16" Foreground="#A0A0A0"/>
-                <TextBlock Text="返回" FontSize="14" Foreground="#A0A0A0"/>
-            </StackPanel>
-        </Button>
+        <!-- Top Bar: Back + Edit -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="20,20,20,10">
+            <!-- Back Button (Left) -->
+            <Button Grid.Column="0"
+                    Command="{Binding BackCommand}"
+                    Padding="12,8"
+                    Background="Transparent"
+                    BorderBrush="#666666"
+                    BorderThickness="1"
+                    CornerRadius="6"
+                    Cursor="Hand"
+                    HorizontalAlignment="Left"
+                    ZIndex="10">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="←" FontSize="16" Foreground="#A0A0A0"/>
+                    <TextBlock Text="返回" FontSize="14" Foreground="#A0A0A0"/>
+                </StackPanel>
+            </Button>
+
+            <!-- Edit Button (Right) -->
+            <Button Grid.Column="2"
+                    Command="{Binding EditDeckCommand}"
+                    Padding="12,8"
+                    Background="Transparent"
+                    BorderBrush="#666666"
+                    BorderThickness="1"
+                    CornerRadius="6"
+                    Cursor="Hand"
+                    HorizontalAlignment="Right"
+                    ZIndex="10">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="✎" FontSize="16" Foreground="#A0A0A0"/>
+                    <TextBlock Text="編輯" FontSize="14" Foreground="#A0A0A0"/>
+                </StackPanel>
+            </Button>
+        </Grid>
 
         <!-- Scrollable Content -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <StackPanel Spacing="20" Margin="20,0,20,20">
                 
-                <!-- Card Preview Section -->
+                <!-- Card Preview Section - Swipeable Carousel -->
                 <Border Background="#1A1A1A"
                         CornerRadius="16"
                         Padding="20"
-                        MinHeight="220">
-                    <Grid ColumnDefinitions="Auto,*,Auto">
-                        <!-- Previous Button -->
-                        <Button Grid.Column="0"
-                                Command="{Binding PreviousCardCommand}"
-                                Width="44"
-                                Height="44"
-                                CornerRadius="22"
-                                Background="#2A2A2A"
-                                BorderThickness="0"
-                                Cursor="Hand"
-                                VerticalAlignment="Center"
-                                Margin="0,0,16,0">
-                            <TextBlock Text="◀" FontSize="16" Foreground="White" HorizontalAlignment="Center"/>
-                        </Button>
+                        MinHeight="260">
+                    <Grid RowDefinitions="*,Auto">
+                        <!-- Swipeable Cards Container -->
+                        <ScrollViewer x:Name="CardScrollViewer"
+                                      Grid.Row="0"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollBarVisibility="Disabled"
+                                      HorizontalAlignment="Stretch"
+                                      IsVisible="{Binding HasCards}">
+                            <ItemsControl x:Name="CardsItemsControl" 
+                                          ItemsSource="{Binding ValidCards}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="16"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <controls:FlipCard Width="280" 
+                                                           Height="180"
+                                                           FrontText="{Binding Front}"
+                                                           BackText="{Binding Back}"
+                                                           IsInteractive="True"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
                         
-                        <!-- FlipCard Preview -->
-                        <Grid Grid.Column="1" HorizontalAlignment="Center">
-                            <!-- Card with actual content -->
-                            <Border x:Name="PreviewCardBorder"
-                                    Background="#2A2A2A"
-                                    CornerRadius="12"
-                                    Width="280"
-                                    Height="180"
-                                    Cursor="Hand"
-                                    IsVisible="{Binding PreviewCard, Converter={x:Static ObjectConverters.IsNotNull}}">
-                                <Border.Styles>
-                                    <Style Selector="Border#PreviewCardBorder:pointerover">
-                                        <Setter Property="Background" Value="#333333"/>
-                                    </Style>
-                                </Border.Styles>
-                                <Button Command="{Binding FlipPreviewCommand}"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Stretch"
-                                        HorizontalContentAlignment="Center"
-                                        VerticalContentAlignment="Center"
-                                        Cursor="Hand">
-                                    <StackPanel VerticalAlignment="Center" 
-                                                HorizontalAlignment="Center"
-                                                Spacing="8">
-                                        <!-- Label for Front -->
-                                        <TextBlock Text="詞語"
-                                                   FontSize="12"
-                                                   Foreground="#666666"
-                                                   HorizontalAlignment="Center"
-                                                   IsVisible="{Binding !IsPreviewFlipped}"/>
-                                        <!-- Label for Back -->
-                                        <TextBlock Text="定義"
-                                                   FontSize="12"
-                                                   Foreground="#666666"
-                                                   HorizontalAlignment="Center"
-                                                   IsVisible="{Binding IsPreviewFlipped}"/>
-                                        <!-- Front Content -->
-                                        <TextBlock Text="{Binding PreviewCard.Front}"
-                                                   FontSize="20"
-                                                   FontWeight="SemiBold"
-                                                   Foreground="White"
-                                                   TextWrapping="Wrap"
-                                                   TextAlignment="Center"
-                                                   MaxWidth="240"
-                                                   IsVisible="{Binding !IsPreviewFlipped}"/>
-                                        <!-- Back Content -->
-                                        <TextBlock Text="{Binding PreviewCard.Back}"
-                                                   FontSize="18"
-                                                   Foreground="#E0E0E0"
-                                                   TextWrapping="Wrap"
-                                                   TextAlignment="Center"
-                                                   MaxWidth="240"
-                                                   IsVisible="{Binding IsPreviewFlipped}"/>
-                                        <!-- Tap hint -->
-                                        <TextBlock Text="點擊翻轉"
-                                                   FontSize="11"
-                                                   Foreground="#555555"
-                                                   HorizontalAlignment="Center"
-                                                   Margin="0,8,0,0"/>
-                                    </StackPanel>
-                                </Button>
-                            </Border>
-                            
-                            <!-- No Cards State -->
-                            <Border IsVisible="{Binding PreviewCard, Converter={x:Static ObjectConverters.IsNull}}"
-                                    Background="#2A2A2A"
-                                    CornerRadius="12"
-                                    Width="280"
-                                    Height="180">
-                                <TextBlock Text="尚無卡片"
-                                           FontSize="16"
-                                           Foreground="#666666"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"/>
-                            </Border>
-                            
-                            <!-- Card Counter -->
-                            <Border Background="#333333"
-                                    CornerRadius="12"
-                                    Padding="10,4"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Bottom"
-                                    Margin="0,0,0,-12">
-                                <TextBlock Text="{Binding PreviewProgress}"
-                                           FontSize="12"
-                                           Foreground="#A0A0A0"/>
-                            </Border>
-                        </Grid>
+                        <!-- Card Counter & Hint -->
+                        <StackPanel Grid.Row="1" 
+                                    HorizontalAlignment="Center" 
+                                    Margin="0,16,0,0"
+                                    Spacing="4">
+                            <TextBlock Text="{Binding PreviewProgress}"
+                                       FontSize="14"
+                                       Foreground="#A0A0A0"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="← 左右滑動瀏覽 | 點擊卡片翻轉 →"
+                                       FontSize="11"
+                                       Foreground="#555555"
+                                       HorizontalAlignment="Center"
+                                       IsVisible="{Binding HasCards}"/>
+                        </StackPanel>
                         
-                        <!-- Next Button -->
-                        <Button Grid.Column="2"
-                                Command="{Binding NextCardCommand}"
-                                Width="44"
-                                Height="44"
-                                CornerRadius="22"
+                        <!-- No Cards State -->
+                        <Border Grid.Row="0"
+                                IsVisible="{Binding !HasCards}"
                                 Background="#2A2A2A"
-                                BorderThickness="0"
-                                Cursor="Hand"
-                                VerticalAlignment="Center"
-                                Margin="16,0,0,0">
-                            <TextBlock Text="▶" FontSize="16" Foreground="White" HorizontalAlignment="Center"/>
-                        </Button>
+                                CornerRadius="12"
+                                Width="280"
+                                Height="180"
+                                HorizontalAlignment="Center">
+                            <TextBlock Text="尚無卡片"
+                                       FontSize="16"
+                                       Foreground="#666666"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
                     </Grid>
                 </Border>
 

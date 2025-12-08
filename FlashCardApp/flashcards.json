@@ -12,8 +12,13 @@
         "Id": "72519949-e653-4aef-95a1-3e8dd30bad2d",
         "Front": "hi",
         "Back": "\u4F60\u597D"
+      },
+      {
+        "Id": "1d2f5e1b-8187-457c-96f0-ef82be4fdce0",
+        "Front": "000",
+        "Back": "kkoko"
       }
     ],
-    "ValidCardCount": 2
+    "ValidCardCount": 3
   }
 ]

@@ -91,7 +91,8 @@ public partial class MainWindowViewModel : ViewModelBase
         var detailViewModel = new DeckDetailViewModel(
             deck,
             startStudy: GoToStudy,
-            goBack: GoToDeckList
+            goBack: GoToDeckList,
+            editDeck: GoToEditor
         );
 
         CurrentView = detailViewModel;
